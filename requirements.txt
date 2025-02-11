@@ -1,0 +1,7 @@
+git+https://github.com/mahmoodlab/trident.git
+threadpoolctl
+scikit-learn
+scikit-survival
+lovely-tensors
+seaborn
+datasets
