@@ -21,7 +21,7 @@ This project was developed by the [Mahmood Lab](https://faisal.ai/) at Harvard M
 
 - Create a virtual environment, e.g., `conda create -n "pathobench" python=3.10`, and activate it `conda activate pathobench`.
 - **From local clone**:
-    - `git clone https://github.com/mahmoodlab/Patho-Bench.git && cd patho-bench`.
+    - `git clone https://github.com/mahmoodlab/Patho-Bench.git && cd Patho-Bench`.
     - Local install with running `pip install -e .`.
 - **Using pip**:
     - `pip install git+https://github.com/mahmoodlab/Patho-Bench.git`
