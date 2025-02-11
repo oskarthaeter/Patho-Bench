@@ -132,7 +132,7 @@ Patho-Bench offers a `Runner` class for large parallel runs with automatic GPU l
 ## Funding
 This work was funded by NIH NIGMS [R35GM138216](https://reporter.nih.gov/search/sWDcU5IfAUCabqoThQ26GQ/project-details/10029418).
 
-## Reference
+## How to cite
 
 If you find our work useful in your research or if you use parts of this code, please consider citing the following papers:
 
