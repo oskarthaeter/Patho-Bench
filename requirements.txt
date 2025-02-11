@@ -5,3 +5,4 @@ scikit-survival
 lovely-tensors
 seaborn
 datasets
+einops
