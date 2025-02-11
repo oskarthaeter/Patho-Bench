@@ -1,10 +1,10 @@
 # Patho-Bench
 
-[arxiv](https://arxiv.org/pdf/2501.16652) | [HuggingFace](https://huggingface.co/datasets/MahmoodLab/Patho-Bench) | [Cite](https://github.com/mahmoodlab/patho-bench?tab=readme-ov-file#reference) | [License](https://github.com/mahmoodlab/patho-bench/blob/main/LICENSE)
+[arxiv](https://arxiv.org/pdf/2502.06750) | [HuggingFace](https://huggingface.co/datasets/MahmoodLab/Patho-Bench) | [Cite](https://github.com/mahmoodlab/patho-bench?tab=readme-ov-file#reference) | [License](https://github.com/mahmoodlab/patho-bench/blob/main/LICENSE)
 
 **Patho-Bench is a Python library designed to benchmark foundation models for pathology.** 
 
-This project was developed by the [Mahmood Lab](https://faisal.ai/) at Harvard Medical School and Brigham and Women's Hospital.
+This project was developed by the [Mahmood Lab](https://faisal.ai/) at Harvard Medical School and Brigham and Women's Hospital. This work was funded by NIH NIGMS R35GM138216.
 
 > [!NOTE]
 > Please report any issues on GitHub and contribute by opening a pull request.
@@ -130,22 +130,25 @@ Patho-Bench offers a `Runner` class for large parallel runs with automatic GPU l
 4. Run `./run.sh`: This command will launch `tmux` windows for each parallel process and will close tmux windows automatically as the tasks are done.
     - You may need to make the script executable first: `chmod +x run.sh`
 
+## Funding
+This work was funded by NIH NIGMS [R35GM138216](https://reporter.nih.gov/search/sWDcU5IfAUCabqoThQ26GQ/project-details/10029418).
+
 ## Reference
 
 If you find our work useful in your research or if you use parts of this code, please consider citing the following papers:
 
 ```
-@article{vaidya2025molecular,
-  title={Molecular-driven Foundation Model for Oncologic Pathology},
-  author={Vaidya, Anurag and Zhang, Andrew and Jaume, Guillaume and Song, Andrew H and Ding, Tong and Wagner, Sophia J and Lu, Ming Y and Doucet, Paul and Robertson, Harry and Almagro-Perez, Cristina and others},
-  journal={arXiv preprint arXiv:2501.16652},
-  year={2025}
-}
-
 @article{zhang2025standardizing,
   title={Accelerating Data Processing and Benchmarking of AI Models for Pathology},
   author={Zhang, Andrew and Jaume, Guillaume and Vaidya, Anurag and Ding, Tong and Mahmood, Faisal},
   journal={arXiv preprint arXiv:2502.06750},
+  year={2025}
+}
+
+@article{vaidya2025molecular,
+  title={Molecular-driven Foundation Model for Oncologic Pathology},
+  author={Vaidya, Anurag and Zhang, Andrew and Jaume, Guillaume and Song, Andrew H and Ding, Tong and Wagner, Sophia J and Lu, Ming Y and Doucet, Paul and Robertson, Harry and Almagro-Perez, Cristina and others},
+  journal={arXiv preprint arXiv:2501.16652},
   year={2025}
 }
 ```
