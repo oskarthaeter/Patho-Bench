@@ -462,7 +462,7 @@ class DataSplit(ConfigMixin):
 
         #### Visualize split
         colors = {'train': 'blue', 'val': 'yellow', 'test': 'red', '-1': 'gray'}
-        plt.figure(figsize=(10, 0.2*self.num_folds))
+        plt.figure(figsize=(10, 1 + 0.2*self.num_folds))
 
         for fold_idx in tqdm(range(self.num_folds), desc='Visualizing split'):
             # Iterate through ids
@@ -477,6 +477,7 @@ class DataSplit(ConfigMixin):
         plt.yticks(range(self.num_folds), [f'fold_{i}' for i in range(self.num_folds)])
         plt.xlabel('Sample Index')
         plt.ylabel('fold')
+        plt.tight_layout()  # Ensure the x-ticks are fully visible
 
         # Create custom artists for legend
         test_artist = plt.Line2D((0,1),(0,0), color='red', marker='o', linestyle='')
@@ -488,7 +489,8 @@ class DataSplit(ConfigMixin):
             os.makedirs(os.path.dirname(saveto), exist_ok=True)
             plt.savefig(saveto)
         else:
-            plt.show();
+            plt.show()
+        plt.close()
 
     def visualize_labels(self, fold = 0, saveto = None):
         '''
@@ -551,6 +553,7 @@ class DataSplit(ConfigMixin):
             plt.savefig(saveto)
         else:
             plt.show()
+        plt.close()
 
     def get_label_distribution(self, label_attr):
         '''
