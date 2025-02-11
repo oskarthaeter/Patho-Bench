@@ -20,11 +20,10 @@ This project was developed by the [Mahmood Lab](https://faisal.ai/) at Harvard M
 ## **Installation**:
 
 - Create a virtual environment, e.g., `conda create -n "pathobench" python=3.10`, and activate it `conda activate pathobench`.
-- **From local clone**:
-    - `git clone https://github.com/mahmoodlab/Patho-Bench.git && cd Patho-Bench`.
-    - Local install with running `pip install -e .`.
-- **Using pip**:
-    - `pip install git+https://github.com/mahmoodlab/Patho-Bench.git`
+- `git clone https://github.com/mahmoodlab/Patho-Bench.git && cd Patho-Bench`.
+- Install dependencies (including trident) `pip install -r requirements.txt`
+- Local install with running `pip install -e .`.
+
 Additional packages may be required if you are loading specific pretrained models. Follow error messages for additional instructions.
 
 > [!NOTE]  
