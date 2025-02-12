@@ -23,9 +23,6 @@ Patho-Bench offers a `Runner` class for large parallel runs with automatic GPU l
 
     BALANCED: # Balanced class weights
     - True
-
-    NUM_BOOTSTRAPS: # Number of bootstrap iterations for single-fold tasks
-    - 100
     ```
 > [!NOTE]
 > Instead of providing a list of `COST` values, you can set `COST: auto` to automatically sweep over `np.logspace(np.log10(10e-6), np.log10(10e5), num=45)`. This behavior can be modified in `ExperimentFactory.py`.
