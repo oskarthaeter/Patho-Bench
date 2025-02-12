@@ -1,5 +1,0 @@
-SIMILARITY: # Similarity metric to use for retrieval
-    - l2
-
-CENTERING: # Whether to use centering for retrieval
-    - False
