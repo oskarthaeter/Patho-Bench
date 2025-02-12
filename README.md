@@ -30,10 +30,8 @@ Additional packages may be required if you are loading specific pretrained model
 > Patho-Bench works with encoders implemented in [Trident](https://github.com/mahmoodlab/trident); use Trident to extract patch embeddings for your WSIs prior to running Patho-Bench.
 
 > [!NOTE]
-> Patho-Bench relies on our [HuggingFace repo](https://huggingface.co/datasets/MahmoodLab/patho-bench) to directly read splits for tasks. If you want to use custom splits, format them similarly to our HuggingFace splits.
-
-> [!NOTE]
-> Our provided HuggingFace splits only include train and test assignments, not validation. If you want to use a validation set, you can manually reserve a portion of the training set for validation (`val`) after downloading the split. Note that some tasks have a small number of samples, which may make a validation set impractical.
+> Patho-Bench automatically downloads supported tasks from our [HuggingFace repo](https://huggingface.co/datasets/MahmoodLab/patho-bench). Our provided HuggingFace splits only include train and test assignments, not validation. If you want to use a validation set, you can manually reserve a portion of the training set for validation (`val`) after downloading the split. Note that some tasks have a small number of samples, which may make a validation set impractical.
+> If you want to use custom splits, format them similarly to our HuggingFace splits.
 
 ## 🏃 **Running Patho-Bench**
 
