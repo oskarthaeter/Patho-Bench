@@ -30,7 +30,10 @@ Patho-Bench offers a `Runner` class for large parallel runs with automatic GPU l
 > [!NOTE]
 > Instead of providing a list of `COST` values, you can set `COST: auto` to automatically sweep over `np.logspace(np.log10(10e-6), np.log10(10e5), num=45)`. This behavior can be modified in `ExperimentFactory.py`.
 
-3. Navigate to `./advanced_usage/run.sh` and edit the command to run the desired evaluation:
+> [!NOTE]
+> You can define model-specific hyperparameters in separate YAML files. For example, see `./advanced_usage/configs/fineune/*.yaml` for finetuning hyperparameters for several models evaluated in the THREADS paper (https://arxiv.org/pdf/2501.16652). The `--hyperparams_yaml` argument in `run.sh` should point to the desired YAML file (see below).
+
+3. Navigate to `./advanced_usage/run.sh` and edit the command to run the desired evaluation. See `./advanced_usage/run.py` for all possible arguments. For example:
     ```bash
     python run.py \
         --experiment_type linprobe \

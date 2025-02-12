@@ -79,7 +79,7 @@ result = experiment.report_results(metric = 'macro-ovr-auc')
 > [!NOTE]  
 > Provide `patch_embeddings_dirs` so Patho-Bench knows where to find the patch embeddings for pooling. While `Trident` also supports pooling, it doesn't handle patient-level tasks with multiple slides per patient. Patho-Bench uses a generalized pooling function for multi-slide fusion. Patho-Bench requires Trident patch-level features, NOT slide-level features.
 
-You can find further advanced features in a more [detailed readme](https://github.com/mahmoodlab/Patho-Bench/blob/main/DETAILS.md).
+Want to do large-scale benchmarking? See instructions for [advanced usage](https://github.com/mahmoodlab/Patho-Bench/blob/main/advanced_usage/README.md).
 
 ## Funding
 This work was funded by NIH NIGMS [R35GM138216](https://reporter.nih.gov/search/sWDcU5IfAUCabqoThQ26GQ/project-details/10029418).
