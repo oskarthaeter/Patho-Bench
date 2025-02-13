@@ -1,6 +1,7 @@
 # Patho-Bench
 
-[arxiv](https://arxiv.org/pdf/2502.06750) | [HuggingFace](https://huggingface.co/datasets/MahmoodLab/Patho-Bench) | [Cite](https://github.com/mahmoodlab/patho-bench?tab=readme-ov-file#how-to-cite) | [License](https://github.com/mahmoodlab/patho-bench/blob/main/LICENSE)
+[arXiv](https://arxiv.org/pdf/2502.06750) | [HuggingFace](https://huggingface.co/datasets/MahmoodLab/Patho-Bench) | [Blog](https://www.linkedin.com/pulse/announcing-new-open-source-tools-accelerate-ai-pathology-andrew-zhang-loape/?trackingId=pDkifo54SRuJ2QeGiGcXpQ%3D%3D) | [Cite](https://github.com/mahmoodlab/patho-bench?tab=readme-ov-file#how-to-cite)
+ | [License](https://github.com/mahmoodlab/patho-bench/blob/main/LICENSE)
 
 **Patho-Bench is a Python library designed to benchmark foundation models for pathology.** 
 
