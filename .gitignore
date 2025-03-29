@@ -15,3 +15,5 @@ _tutorial*/
 *.pth
 *.bin
 tf_logs/
+.env
+.devcontainer
