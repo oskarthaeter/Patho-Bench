@@ -29,6 +29,9 @@ def main():
     parser.add_argument("--delay_interval", type=float, default=2, help="Factor by which to delay each pane. Pane i is delayed by i**delay_interval seconds.")
     parser.add_argument("--global_delay", type=int, default=0, help="Delay the whole study in minutes.")
     parser.add_argument('--gpu', type=int, default=-1, help='GPU to use for pooling. If -1, the best available GPU is used.')
+    parser.add_argument('--wandb_project', type=SpecialDtypes.none_or_str, default=None, help='W&B project name. If not provided, wandb logging is disabled.')
+    parser.add_argument('--wandb_group', type=SpecialDtypes.none_or_str, default=None, help='W&B group name.')
+    parser.add_argument('--patch_model_name', type=SpecialDtypes.none_or_str, default=None, help='Key used to look up patch embeddings paths. Defaults to --model_name when not provided.')
     args = parser.parse_args()
 
     assert args.conda_venv or args.venv, "Please provide either a conda or non-conda virtual environment."

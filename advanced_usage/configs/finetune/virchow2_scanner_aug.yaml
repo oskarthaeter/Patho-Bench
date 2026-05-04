@@ -1,0 +1,47 @@
+BASE_LEARNING_RATE:
+    - 0.0003
+
+WEIGHT_DECAY:
+    - 0.00001
+
+LAYER_DECAY:
+    - null
+
+GRADIENT_ACCUMULATION:
+    - 1
+
+NUM_EPOCHS:
+    - 20
+
+SCHEDULER_TYPE:
+    - cosine
+
+OPTIMIZER_TYPE:
+    - AdamW
+
+BALANCED:
+    - True
+
+BAG_SIZE:
+    - 2048
+
+SAVE_WHICH_CHECKPOINTS:
+    - last-1
+
+SCANNER_TRANSFER_CKPT:
+    - ../scanner_transfer_models/virchow2_scanner_transfer_tgt.ckpt
+
+TGT_SCANNERS:
+    - - AT2
+      - GT450
+      - P
+      - S210
+      - S360
+      - S60
+      - SQ
+
+SCANNER_TRANSFER_DEVICE:
+    - cuda
+
+AUG_PROB:
+    - 0.5

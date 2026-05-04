@@ -6,6 +6,7 @@ import time
 from tqdm import tqdm
 import json
 import warnings
+from pathlib import Path
 
 # Import optimizers
 from torch.optim import Adam
@@ -46,6 +47,8 @@ class FinetuningExperiment(LoggingMixin, ClassificationMixin, SurvivalMixin, Bas
                  view_progress: str = 'bar',
                  lr_logging_interval: int = None,
                  seed: int = 7,
+                 wandb_project: str = None,
+                 wandb_group: str = None,
                  **kwargs):
         """
         Base class for all experiments.
@@ -87,8 +90,15 @@ class FinetuningExperiment(LoggingMixin, ClassificationMixin, SurvivalMixin, Bas
         self.view_progress = view_progress
         self.lr_logging_interval = lr_logging_interval
         self.seed = seed
+        self.wandb_project = wandb_project
+        self.wandb_group = wandb_group
+        self.wandb_run = None
         self.set_seed(self.seed)
-        
+        self.scanner_augmentor = None   # set externally by ExperimentFactory if enabled
+        self.histaug_augmentor = None   # set externally by ExperimentFactory if enabled
+        self.augmentation_order = ['scanner_transfer', 'histaug']  # set externally to change order
+        self.wandb_run_name = None      # set externally by ExperimentFactory if desired
+
         # Set kwargs as extra attributes for saving in config.json
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -105,6 +115,20 @@ class FinetuningExperiment(LoggingMixin, ClassificationMixin, SurvivalMixin, Bas
         self.save_config(os.path.join(self.results_dir, 'config.json'))
         self.train_results_dir = self.results_dir  # Store a copy of the training results dir for loading model in self.test(), in case want to save test results in a different directory
 
+        ### Init wandb run (one run covers all folds + test)
+        if self.wandb_project is not None:
+            import wandb
+            from dotenv import load_dotenv, find_dotenv
+            load_dotenv(find_dotenv())
+            run_name = self.wandb_run_name or self.results_dir
+            self.wandb_run = wandb.init(
+                project=self.wandb_project,
+                group=self.wandb_group,
+                name=run_name,
+                config=self._wandb_config(),
+                reinit=True,
+            )
+
         ### Loop through folds
         for self.current_iter in range(self.dataset.num_folds):
             
@@ -113,7 +137,7 @@ class FinetuningExperiment(LoggingMixin, ClassificationMixin, SurvivalMixin, Bas
             self.loggers = self.init_loggers(save_dir = os.path.join(self.results_dir, 'training_metrics', f'fold_{self.current_iter}'))
 
             ### Initialize train and val dataloaders
-            self.dataloaders = {mode: self.dataset.get_dataloader(self.current_iter, mode, batch_size=self.batch_size) for mode in ['train', 'val']}
+            self.dataloaders = {mode: self.dataset.get_dataloader(self.current_iter, mode, batch_size=self.batch_size, seed=self.seed) for mode in ['train', 'val']}
             
             ### Initialize model
             self.model = self.model_constructor(**self.model_kwargs, device = self.device)
@@ -169,6 +193,9 @@ class FinetuningExperiment(LoggingMixin, ClassificationMixin, SurvivalMixin, Bas
         Evaluate the model on the test set for each fold.
         '''
         self._eval(split='test')
+        if self.wandb_run is not None:
+            self.wandb_run.finish()
+            self.wandb_run = None
 
     def validate(self):
         """
@@ -237,6 +264,7 @@ class FinetuningExperiment(LoggingMixin, ClassificationMixin, SurvivalMixin, Bas
 
         with torch.inference_mode(), torch.autocast(device_type='cuda', dtype=self.precision, enabled=self.precision != torch.float32):
             for batch in dataloader:
+                batch = self._apply_scanner_augmentation(batch)
                 if self.task_type == 'classification':
                     label = batch['labels'][self.model_kwargs['task_name']].cpu().int().numpy().tolist()[0]
                     logits = model(batch, output='logits') # Forward pass
@@ -280,6 +308,28 @@ class FinetuningExperiment(LoggingMixin, ClassificationMixin, SurvivalMixin, Bas
             scores = self.survival_metrics(labels['survival_event'], labels['survival_time'], preds, saveto = os.path.join(save_dir, "metrics.json"))
             return scores
 
+    def _log_summary_to_wandb(self, split, summary):
+        """Log a _finalize_metrics summary dict to wandb."""
+        if self.wandb_run is None:
+            return
+        import wandb
+        for metric, values in summary.items():
+            if isinstance(values, dict) and values.get('mean') is not None:
+                wandb.run.summary[f"{split}/{metric}"] = values['mean']
+
+    def _wandb_config(self):
+        return {
+            'task_name': self.model_kwargs.get('task_name'),
+            'num_classes': self.model_kwargs.get('num_classes'),
+            'num_epochs': self.num_epochs,
+            'base_lr': self.optimizer_config.get('base_lr'),
+            'weight_decay': self.optimizer_config.get('weight_decay'),
+            'scheduler': str(self.scheduler_config.get('type')),
+            'optimizer': self.optimizer_config.get('type'),
+            'augmentation': '+'.join(n for n in self.augmentation_order if getattr(self, f"{n.replace('-', '_')}_augmentor") is not None) or 'none',
+            'results_dir': self.results_dir,
+        }
+
     def _finalize_metrics(self, split, labels_across_folds, preds_across_folds, scores_across_folds):
         """
         Combine per-fold results or do bootstrapping if single fold
@@ -312,10 +362,12 @@ class FinetuningExperiment(LoggingMixin, ClassificationMixin, SurvivalMixin, Bas
                 with open(file_path, "w") as f:
                     json.dump(metrics_dict, f, indent=4)
 
-            return self.get_95_ci(scores_across_folds)
+            summary = self.get_95_ci(scores_across_folds)
         else:
             # Report mean ± SE across folds
-            return self.get_mean_se(scores_across_folds)
+            summary = self.get_mean_se(scores_across_folds)
+        self._log_summary_to_wandb(split, summary)
+        return summary
 
     def _pick_checkpoint(self, checkpoint_dir):
         """
@@ -336,11 +388,35 @@ class FinetuningExperiment(LoggingMixin, ClassificationMixin, SurvivalMixin, Bas
         else:
             return os.path.join(checkpoint_dir, available_checkpoints[0])
     
+    def _apply_scanner_augmentation(self, batch):
+        """Apply feature-space augmentation (scanner transfer and/or HistAug) to patch features."""
+        name_to_augmentor = {'scanner_transfer': self.scanner_augmentor, 'histaug': self.histaug_augmentor}
+        augmentors = [name_to_augmentor[name] for name in self.augmentation_order if name_to_augmentor[name] is not None]
+        if not augmentors:
+            return batch
+        features = batch['slide']['features']
+        if isinstance(features, torch.Tensor):
+            # DataLoader stacks a batch dim: (1, N, D) → squeeze to (N, D) for augmentor.
+            # Clone after augmentor to escape inference_mode so autograd can track the tensor.
+            x = features.squeeze(0)
+            for augmentor in augmentors:
+                x = augmentor(x)
+            batch['slide']['features'] = x.clone().unsqueeze(0)
+        elif isinstance(features, list):
+            # Each element is (1, N_i, D) after collation
+            def _augment(f):
+                x = f.squeeze(0)
+                for augmentor in augmentors:
+                    x = augmentor(x)
+                return x.clone().unsqueeze(0)
+            batch['slide']['features'] = [_augment(f) for f in features]
+        return batch
+
     def _run_single_epoch(self):
         """
         Runs a single training or validation epoch. After the epoch, the epoch metrics are stored in self.current_epoch_metrics.
         """
-        
+
         # Set models to appropriate mode
         if self.mode == 'train':
             self.model.train()
@@ -363,6 +439,7 @@ class FinetuningExperiment(LoggingMixin, ClassificationMixin, SurvivalMixin, Bas
         with context_manager:
             for batch_idx, batch in enumerate(self.dataloaders[self.mode]):
                 num_samples_processed += len(batch['ids'])
+                batch = self._apply_scanner_augmentation(batch)
                 with torch.autocast(device_type='cuda', dtype=self.precision, enabled=self.precision != torch.float32):
                     loss, info = self.model(batch, output='loss')
                     loss = loss / self.accumulation_steps
@@ -525,3 +602,12 @@ class FinetuningExperiment(LoggingMixin, ClassificationMixin, SurvivalMixin, Bas
             return AdamW(param_groups, self.optimizer_config['base_lr'], **extra_kwargs)
         else:
             raise NotImplementedError(f"Optimizer {optimizer_type} not implemented.")
+
+    def log_loss(self, step):
+        super().log_loss(step)
+
+    def log_lr(self, step):
+        super().log_lr(step)
+
+    def log_smooth_rank(self, step):
+        super().log_smooth_rank(step)

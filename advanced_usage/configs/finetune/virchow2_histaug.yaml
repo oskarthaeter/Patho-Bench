@@ -1,0 +1,56 @@
+BASE_LEARNING_RATE:
+    - 0.0003
+
+WEIGHT_DECAY:
+    - 0.00001
+
+LAYER_DECAY:
+    - null
+
+GRADIENT_ACCUMULATION:
+    - 1
+
+NUM_EPOCHS:
+    - 20
+
+SCHEDULER_TYPE:
+    - cosine
+
+OPTIMIZER_TYPE:
+    - AdamW
+
+BALANCED:
+    - True
+
+BAG_SIZE:
+    - 2048
+
+SAVE_WHICH_CHECKPOINTS:
+    - last-1
+
+HISTAUG_DEVICE:
+    - cuda
+
+AUG_PROB:
+    - 0.5
+
+### Optional: override individual transform parameters.
+### Continuous transforms (brightness, contrast, saturation, hue, powerlaw, hed)
+### take [lower, upper] ranges (defaults are [-0.5, 0.5]).
+### Binary/discrete transforms (h_flip, v_flip, gaussian_blur, erosion, dilation,
+### rotation, crop) take a float probability (defaults are 0.75).
+### Unspecified keys keep their model defaults.
+HISTAUG_PARAMS:
+   - brightness: [-0.2, 0.2]
+     contrast: [-0.2, 0.2]
+     saturation: [-0.2, 0.2]
+     hue: [-0.05, 0.05]
+     hed: [-0.15, 0.15]
+     powerlaw: [-0.15, 0.15]
+     erosion: 0.0
+     dilation: 0.0
+     gaussian_blur: 0.25
+     h_flip: 0.5
+     v_flip: 0.5
+     rotation: 0.5
+     crop: 0.5

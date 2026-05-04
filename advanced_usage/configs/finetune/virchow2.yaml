@@ -1,0 +1,29 @@
+BASE_LEARNING_RATE:
+    - 0.0003
+
+WEIGHT_DECAY:
+    - 0.00001
+
+LAYER_DECAY:
+    - null
+
+GRADIENT_ACCUMULATION:
+    - 1
+
+NUM_EPOCHS:
+    - 20
+
+SCHEDULER_TYPE:
+    - cosine
+
+OPTIMIZER_TYPE:
+    - AdamW
+
+BALANCED:
+    - True
+
+BAG_SIZE:
+    - 2048
+
+SAVE_WHICH_CHECKPOINTS:
+    - last-1

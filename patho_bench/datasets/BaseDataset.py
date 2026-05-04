@@ -226,25 +226,35 @@ class BaseDataset(torch.utils.data.Dataset, ConfigMixin):
         else:
             raise NotImplementedError(f'Sampler type {sampler} not implemented')
         
-    def get_dataloader(self, current_iter, fold, batch_size = None):
+    def get_dataloader(self, current_iter, fold, batch_size = None, seed = None):
         '''
         Returns a dataloader for the dataset.
-        
+
         Args:
             current_iter (int): Index of the current iteration
             fold (str): 'train', 'val', or 'test'
             batch_size (int): Batch size. If None, will pass all samples in a single batch. Defaults to None.
-            
+            seed (int): If provided, seeds the DataLoader workers and sampler for reproducibility.
+
         Returns:
             dataloader (torch.utils.data.DataLoader): Dataloader for the dataset
         '''
-        
+
         subset_dataset = self.get_subset(current_iter, fold)
         if subset_dataset is None:
             return None
-    
+
+        generator = None
+        worker_init_fn = None
+        if seed is not None:
+            generator = torch.Generator()
+            generator.manual_seed(seed)
+            worker_init_fn = lambda worker_id: np.random.seed(seed + worker_id)
+
         return torch.utils.data.DataLoader(subset_dataset,
                                             batch_size = len(subset_dataset) if batch_size is None else batch_size,
                                             sampler = subset_dataset.get_datasampler('random'),
                                             num_workers = 4,
-                                            collate_fn = subset_dataset.collate_fn)
+                                            collate_fn = subset_dataset.collate_fn,
+                                            generator = generator,
+                                            worker_init_fn = worker_init_fn)

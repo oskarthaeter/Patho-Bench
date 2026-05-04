@@ -48,6 +48,9 @@ if __name__ == '__main__':
     parser.add_argument('--path_to_external_split', type=SpecialDtypes.none_or_str, default = None, help='Local path to external split file')
     parser.add_argument('--path_to_task_config', type=SpecialDtypes.none_or_str, default = None, help='Local path to task config file')
     parser.add_argument('--gpu', type=int, default=-1, help='GPU to use for pooling. If -1, the best available GPU is used.')
+    parser.add_argument('--wandb_project', type=SpecialDtypes.none_or_str, default=None, help='W&B project name. If not provided, wandb logging is disabled.')
+    parser.add_argument('--wandb_group', type=SpecialDtypes.none_or_str, default=None, help='W&B group name.')
+    parser.add_argument('--patch_model_name', type=SpecialDtypes.none_or_str, default=None, help='Key used to look up patch embeddings paths. Defaults to --model_name when not provided.')
     args = parser.parse_args()
     
     ###################################################################
@@ -74,7 +77,8 @@ if __name__ == '__main__':
     if args.patch_dirs_yaml is not None:
         with open(args.patch_dirs_yaml, 'r') as f:
             patch_dirs_dict = yaml.safe_load(f)
-            patch_embeddings_dirs = make_list(patch_dirs_dict[train_source][args.model_name])
+            patch_key = args.patch_model_name if args.patch_model_name is not None else args.model_name
+            patch_embeddings_dirs = make_list(patch_dirs_dict[train_source][patch_key])
     else:
         patch_embeddings_dirs = None
         
@@ -102,7 +106,7 @@ if __name__ == '__main__':
         
         # Update patch_embeddings_dirs to include external patch embeddings
         if patch_embeddings_dirs is not None:
-            patch_embeddings_dirs += make_list(patch_dirs_dict[test_source][args.model_name])
+            patch_embeddings_dirs += make_list(patch_dirs_dict[test_source][patch_key])
         
         # Get external pooled embeddings directory
         if pooled_embeddings_dir is not None:
@@ -136,4 +140,6 @@ if __name__ == '__main__':
                             external_split = path_to_external_split,
                             external_pooled_embeddings_dir = external_pooled_embeddings_dir,
                             external_saveto = external_saveto,
-                            num_bootstraps = 100)
+                            num_bootstraps = 100,
+                            wandb_project = args.wandb_project,
+                            wandb_group = args.wandb_group)

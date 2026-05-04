@@ -32,6 +32,7 @@ cptac_ccrcc:
   prism: ''
   threads: ''
   titan: ''
+  virchow2: /mnt/data/ge96giq/patho-bench/features/cptac_ccrcc/virchow2
 cptac_coad:
   chief: ''
   gigapath: ''
@@ -44,30 +45,35 @@ cptac_gbm:
   prism: ''
   threads: ''
   titan: ''
+  virchow2: /mnt/data/ge96giq/patho-bench/features/cptac_gbm/virchow2
 cptac_hnsc:
   chief: ''
   gigapath: ''
   prism: ''
   threads: ''
   titan: ''
+  virchow2: /mnt/data/ge96giq/patho-bench/features/cptac_hnsc/virchow2
 cptac_lscc:
   chief: ''
   gigapath: ''
   prism: ''
   threads: ''
   titan: ''
+  virchow2: /mnt/data/ge96giq/patho-bench/features/cptac_lscc/virchow2
 cptac_luad:
   chief: ''
   gigapath: ''
   prism: ''
   threads: ''
   titan: ''
+  virchow2: /mnt/data/ge96giq/patho-bench/features/cptac_luad/virchow2
 cptac_pda:
   chief: ''
   gigapath: ''
   prism: ''
   threads: ''
   titan: ''
+  virchow2: /mnt/data/ge96giq/patho-bench/features/cptac_pda/virchow2
 ebrains:
   chief: ''
   gigapath: ''

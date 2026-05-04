@@ -1,0 +1,68 @@
+BASE_LEARNING_RATE:
+    - 0.0003
+
+WEIGHT_DECAY:
+    - 0.00001
+
+LAYER_DECAY:
+    - null
+
+GRADIENT_ACCUMULATION:
+    - 1
+
+NUM_EPOCHS:
+    - 20
+
+SCHEDULER_TYPE:
+    - cosine
+
+OPTIMIZER_TYPE:
+    - AdamW
+
+BALANCED:
+    - True
+
+BAG_SIZE:
+    - 2048
+
+SAVE_WHICH_CHECKPOINTS:
+    - last-1
+
+SCANNER_TRANSFER_CKPT:
+    - ../scanner_transfer_models/virchow2_scanner_transfer_tgt.ckpt
+
+TGT_SCANNERS:
+    - - AT2
+      - GT450
+      - P
+      - S210
+      - S360
+      - S60
+      - SQ
+
+SCANNER_TRANSFER_DEVICE:
+    - cuda
+
+HISTAUG_DEVICE:
+    - cuda
+
+AUG_PROB:
+    - 0.5
+
+AUGMENTATION_ORDER:
+    - - scanner_transfer
+      - histaug
+
+### Optional: override individual HistAug transform parameters.
+### Continuous transforms (brightness, contrast, saturation, hue, powerlaw, hed)
+### take [lower, upper] ranges (defaults are [-0.5, 0.5]).
+### Binary/discrete transforms (h_flip, v_flip, gaussian_blur, erosion, dilation,
+### rotation, crop) take a float probability (defaults are 0.75).
+### Unspecified keys keep their model defaults.
+#HISTAUG_PARAMS:
+#    - brightness: [-0.2, 0.2]
+#      contrast: [-0.2, 0.2]
+#      saturation: [-0.2, 0.2]
+#      hue: [-0.2, 0.2]
+#      hed: [-0.2, 0.2]
+#      powerlaw: [-0.2, 0.2]

@@ -40,6 +40,9 @@ class Runner:
         self.global_delay = args.global_delay
         self.delay_interval = args.delay_interval
         self.preserve = args.preserve
+        self.wandb_project = getattr(args, 'wandb_project', None)
+        self.wandb_group = getattr(args, 'wandb_group', None)
+        self.patch_model_name = getattr(args, 'patch_model_name', None)
 
         # Convert self.model_name to list if it's a single string
         if isinstance(self.model_name, str):
@@ -121,6 +124,9 @@ class Runner:
                         f"--patch_dirs_yaml {self.patch_dirs_yaml} "
                         f"--splits_root {self.splits_root} "
                         f"--gpu {self.gpu}"
+                        + (f" --wandb_project {self.wandb_project}" if self.wandb_project else "")
+                        + (f" --wandb_group {self.wandb_group}" if self.wandb_group else "")
+                        + (f" --patch_model_name {self.patch_model_name}" if self.patch_model_name else "")
                     )
                     command_pieces.append(single_command)
                 model_commands.append(" && ".join(command_pieces))

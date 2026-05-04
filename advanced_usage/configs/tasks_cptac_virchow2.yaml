@@ -1,0 +1,10 @@
+# CPTAC tasks for datasets with Virchow2 features
+# Space-separated tasks run sequentially; newline-separated run in parallel
+
+- cptac_ccrcc--BAP1_mutation cptac_ccrcc--PBRM1_mutation
+- cptac_luad--EGFR_mutation cptac_luad--STK11_mutation
+- cptac_luad--TP53_mutation
+- cptac_lscc--KEAP1_mutation cptac_lscc--ARID1A_mutation
+- cptac_hnsc--CASP8_mutation
+- cptac_gbm--EGFR_mutation cptac_gbm--TP53_mutation
+- cptac_pda--SMAD4_mutation
